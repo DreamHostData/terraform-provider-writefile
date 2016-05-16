@@ -1,6 +1,8 @@
 package writefile
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	// "github.com/hashicorp/terraform/helper/hashcode"
 	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
@@ -29,6 +31,11 @@ func fileResource() *schema.Resource {
 	}
 }
 
+func hash(s string) string {
+	sha := sha256.Sum256([]byte(s))
+	return hex.EncodeToString(sha[:])
+}
+
 func fileCreateUpdate(d *schema.ResourceData, meta interface{}) error {
 
 	filepath := d.Get("target").(string)
@@ -42,7 +49,8 @@ func fileCreateUpdate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// d.SetId(hashcode.String(contents))
-	d.SetId(contents)
+	d.SetId(hash(contents))
+
 	return nil
 }
 
