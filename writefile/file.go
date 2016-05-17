@@ -71,6 +71,7 @@ func fileExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 		}
 	}
 	if string(out) == d.Get("contents").(string) {
+		d.SetId(hash(string(out)))
 		return true, nil
 	} else {
 		return false, nil
